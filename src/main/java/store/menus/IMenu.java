@@ -17,6 +17,6 @@ public interface IMenu {
     String EXIT = "Closing Application...";
 
 
-    public void displayMenu(Scanner scanner);
+    void displayMenu(Scanner scanner);
 
 }

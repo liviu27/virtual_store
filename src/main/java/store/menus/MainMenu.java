@@ -7,8 +7,8 @@ public class MainMenu implements IMenu {
     private static MainMenu instance = null;
 
     private static final String MAIN_MENU = "\r\n=== Virtual Store ===\r\n"
-            + "\r\n*) Access the store (keystroke 0)"
-            + "\r\n*) Close application (keystroke 9)\r\n";
+            + "\r\n0) Access the store"
+            + "\r\n9) Close application";
 
     public static MainMenu getInstance() {
         if (instance == null) {

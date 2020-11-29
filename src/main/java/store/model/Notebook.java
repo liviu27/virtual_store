@@ -5,9 +5,20 @@ public class Notebook extends Product {
     boolean hasTouchScreen;
 
 
-    public Notebook(double price, int stock, String manufacturer, int processors, boolean hasTouchScreen) {
-        super(price, stock, manufacturer);
+    public Notebook(Product product, int processors, boolean hasTouchScreen) {
+        super(product.manufacturer, product.price, product.stock);
         this.processors = processors;
         this.hasTouchScreen = hasTouchScreen;
+    }
+
+    @Override
+    public String toString() {
+        return "Notebook {" +
+                "manufacturer = " + manufacturer +
+                ", processors = " + processors +
+                ", hasTouchScreen = " + hasTouchScreen +
+                ", price = " + price +
+                ", stock = " + stock +
+                '}';
     }
 }

@@ -1,14 +1,14 @@
 package store.model;
 
 public class Product {
+    String manufacturer;
     double price;
     int stock;
-    String manufacturer;
 
-    public Product(double price, int stock, String manufacturer) {
+    public Product(String manufacturer, double price, int stock) {
+        this.manufacturer = manufacturer;
         this.price = price;
         this.stock = stock;
-        this.manufacturer = manufacturer;
     }
 
 }

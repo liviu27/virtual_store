@@ -5,9 +5,20 @@ public class Television extends Product {
     boolean isSmart;
 
 
-    public Television(double price, int stock, String manufacturer, int screenSize, boolean isSmart) {
-        super(price, stock, manufacturer);
+    public Television(Product product, int screenSize, boolean isSmart) {
+        super(product.manufacturer, product.price, product.stock );
         this.screenSize = screenSize;
         this.isSmart = isSmart;
+    }
+
+    @Override
+    public String toString() {
+        return "Television {" +
+                "manufacturer = " + manufacturer +
+                ", screenSize = " + screenSize +
+                ", isSmart = " + isSmart +
+                ", price = " + price +
+                ", stock = " + stock +
+                '}';
     }
 }

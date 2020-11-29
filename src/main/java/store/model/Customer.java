@@ -7,12 +7,15 @@ public class Customer {
     private String address;
     private int registrationYear;
     Birthday bday;
+    public final int ID;
+    private static int counter = 0;
 
     public Customer(String name, String address, Birthday bday, int registrationYear) {
         this.name = name;
         this.address = address;
         this.bday = bday;
         this.registrationYear = registrationYear;
+        this.ID = ++counter;
     }
 
     public String getName() {
@@ -56,53 +59,13 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Client [" +
-                "name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", birthday='" + bday + '\'' +
-                ", registrationYear=" + registrationYear +
+        return "Customer " + ID +" [" +
+                "name: '" + name + '\'' +
+                ", address: '" + address + '\'' +
+                ", birthday: '" + bday + '\'' +
+                ", registration year: " + registrationYear +
                 ']';
     }
 
 }
 
-class Birthday {
-    private int day;
-    private int month;
-    private int year;
-
-    public Birthday(int day, int month, int year) {
-        this.day = day;
-        this.month = month;
-        this.year = year;
-    }
-
-    public int getDay() {
-        return day;
-    }
-
-    public void setDay(int day) {
-        this.day = day;
-    }
-
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    @Override
-    public String toString() {
-        return day + "/" + month + "/" + year;
-    }
-}
