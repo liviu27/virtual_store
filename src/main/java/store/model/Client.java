@@ -2,7 +2,7 @@ package store.model;
 
 import java.util.Objects;
 
-public class Customer {
+public class Client {
     private String name;
     private String address;
     private int registrationYear;
@@ -10,7 +10,7 @@ public class Customer {
     public final int ID;
     private static int counter = 0;
 
-    public Customer(String name, String address, Birthday bday, int registrationYear) {
+    public Client(String name, String address, Birthday bday, int registrationYear) {
         this.name = name;
         this.address = address;
         this.bday = bday;
@@ -46,10 +46,10 @@ public class Customer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Customer customer = (Customer) o;
-        return registrationYear == customer.registrationYear &&
-                Objects.equals(name, customer.name) &&
-                Objects.equals(address, customer.address);
+        Client client = (Client) o;
+        return registrationYear == client.registrationYear &&
+                Objects.equals(name, client.name) &&
+                Objects.equals(address, client.address);
     }
 
     @Override

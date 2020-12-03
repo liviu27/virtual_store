@@ -10,6 +10,14 @@ public class Basket {
         basket = new ArrayList<>();
     }
 
+    public List<Product> getBasket() {
+        return basket;
+    }
+
+    public void setBasket(List<Product> basket) {
+        this.basket = basket;
+    }
+
     @Override
     public String toString() {
         return "Basket {" + basket + '}';

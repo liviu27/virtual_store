@@ -1,5 +1,7 @@
 package store.menus;
 
+import store.exceptions.InsufficientStockException;
+import store.exceptions.NoSuchClientException;
 import store.model.*;
 import store.util.Utils;
 
@@ -9,9 +11,10 @@ import java.util.*;
 public class StoreMenu implements IMenu {
 
     private static final String STORE_MENU = "\r\n=== Store Menu ==="
-            + "\r\n*** choose option by number...\r\n"
-            + "\r\n1. Register new customer"
-            + "\r\n2. Add product in stock"
+            + "\r\n*** choose option by number ***\r\n"
+            + "\r\n0. Register new Client"
+            + "\r\n1. Add product in stock"
+            + "\r\n2. Update stock"
             + "\r\n3. Add product in basket"
             + "\r\n4. List basket content"
             + "\r\n5. Remove product from basket"
@@ -28,8 +31,11 @@ public class StoreMenu implements IMenu {
         return instance;
     }
 
-    private Map<Customer, Basket> mapCustomerBasket = new HashMap<>();
-    private Map<String, Product> storeStock = new HashMap<>();
+    private Map<Client, Basket> mapCustomerBasket = new HashMap<>();
+
+    private List<Product> laptopStock = new ArrayList<>();
+    private List<Product> televisionStock = new ArrayList<>();
+    private List<Product> mobileStock = new ArrayList<>();
 
 
     @Override
@@ -40,9 +46,10 @@ public class StoreMenu implements IMenu {
             option = scanner.nextInt();
 
             switch (option) {
-                case INT_1 -> addNewClient(scanner);
-                case INT_2 -> addNewProduct(scanner);
-                case INT_3 -> AddProductInBasketMenu.getInstance().displayMenu(scanner);
+                case INT_0 -> addNewClient(scanner);
+                case INT_1 -> addProductToStock(scanner);
+//                case INT_2 -> updateStock(scanner);
+                case INT_3 -> addProductToBasket(scanner);
 //                case INT_4 -> listBasketContent(scanner);
 //                case INT_5 -> removeProduct(scanner);
 //                case INT_6 -> removeAllProducts(scanner);
@@ -55,7 +62,7 @@ public class StoreMenu implements IMenu {
     }
 
     private void addNewClient(Scanner scanner) {
-        System.out.println("Add customer information:");
+        System.out.println("Add Client information:");
         scanner.nextLine();
         System.out.print("Name: ");
         String customerName = scanner.next();
@@ -70,99 +77,114 @@ public class StoreMenu implements IMenu {
         int year = Integer.parseInt(birthday[2]);
         Birthday customerBirthday = new Birthday(month, day, year);
 
-        Customer customer = new Customer(customerName, customerAddress, customerBirthday, LocalDate.now().getYear());
+        Client client = new Client(customerName, customerAddress, customerBirthday, LocalDate.now().getYear());
         Basket customerBasket = new Basket();
-        mapCustomerBasket.put(customer, customerBasket);
-        System.out.println(customer);
+        mapCustomerBasket.put(client, customerBasket);
+        System.out.println(client);
     }
 
-    private void addNewProduct(Scanner scanner) {
+    private void addProductToStock(Scanner scanner) {
+        Product product;
+
+        System.out.println("Insert product specifications for laptop, television, mobile phone: ");
+        product = Utils.addProduct(scanner);
+
+        switch (product.getType()) {
+            case "laptop" -> {
+                Product laptop;
+                System.out.print("No. of processors: ");
+                int processors = scanner.nextInt();
+                System.out.print("Has touch screen: [true/false] ");
+                boolean hasTouchScreen = scanner.nextBoolean();
+                laptop = new Notebook(product, processors, hasTouchScreen);
+                laptopStock.add(laptop);
+            }
+            case "television" -> {
+                Product television;
+                System.out.print("Screen size in inches: ");
+                int screenSize = scanner.nextInt();
+                System.out.print("Has Smart capabilities: [true/false] ");
+                boolean isSmart = scanner.nextBoolean();
+                television = new Television(product, screenSize, isSmart);
+                televisionStock.add(television);
+            }
+            case "mobile phone" -> {
+                Product phone;
+                System.out.print("Battery size in mAh: ");
+                int batterySize = scanner.nextInt();
+                System.out.print("No. of mega pixels for main camera: ");
+                int megaPixels = scanner.nextInt();
+                phone = new MobilePhone(product, batterySize, megaPixels);
+                mobileStock.add(phone);
+            }
+        }
+    }
+
+    private void addProductToBasket(Scanner scanner) {
+        // Client verification
+        Client client = verifyClient(scanner);
+
+        Basket basket = new Basket();
+
+        final String ADD_TO_BASKET_MENU = "\r\nHello " + client.getName() + ", choose item to add to your basket:"
+                + "\r\n1) Laptop"
+                + "\r\n2) Television"
+                + "\r\n3) Mobile phone\n"
+                + "\r\n9) Return to Store";
         int option;
         do {
-            System.out.println("\r\nChoose type of product: ... "
-                    + "\r\n1) laptop"
-                    + "\r\n2) television"
-                    + "\r\n3) phone"
-                    + "\n"
-                    + "\r\n9) Return to previous menu.");
-
+            System.out.println(ADD_TO_BASKET_MENU);
             option = scanner.nextInt();
             switch (option) {
-                case INT_1 -> addLaptopToStock(scanner);
-                case INT_2 -> addTvToStock(scanner);
-                case INT_3 -> addPhoneToStock(scanner);
-                default -> System.out.println("No such option...");
+                case INT_1 -> {
+                    System.out.println(laptopStock);
+                    System.out.println("Select item to add to your basket");
+                    int itemToAdd = scanner.nextInt();
+                    basket.getBasket().add(laptopStock.get(itemToAdd));
+                    // Update stock.
+                    if(laptopStock.get(itemToAdd).getStock() == 0) {
+                        try {
+                            throw  new InsufficientStockException();
+                        } catch (InsufficientStockException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        int initialStockForSelectedItem = laptopStock.get(itemToAdd).getStock();
+                        laptopStock.get(itemToAdd).setStock(initialStockForSelectedItem - 1);
+                    }
+                    mapCustomerBasket.put(client, basket);
+
+                }
+//                case INT_2 -> addTvToBasket(scanner); //TODO
+//                case INT_3 -> addPhoneToBasket(scanner); //TODO
+                case INT_9 -> System.out.println("...returning to Store Menu.");
+                default -> System.out.println(INVALID_OPTION);
             }
         } while (option != 9);
-
     }
 
-    private void addLaptopToStock(Scanner scanner) {
-        String key = "laptop";
-        Product product;
-        Product laptop;
-
-        System.out.println("Input product specifications: ");
-        product = Utils.addProduct(scanner);
-
-        System.out.print("No. of processors: ");
-        int processors = scanner.nextInt();
-
-        System.out.print("Has touch screen: [true/false] ");
-        boolean hasTouchScreen = scanner.nextBoolean();
-
-        laptop = new Notebook(product, processors, hasTouchScreen);
-        storeStock.put(key, laptop);
+    private Client verifyClient(Scanner scanner) {
+        Set<Client> clientSetList = mapCustomerBasket.keySet();
+        scanner.nextLine();
+        System.out.println("Enter Client name: ");
+        while (true) {
+            String clientName = scanner.nextLine();
+            for (Client client : clientSetList) {
+                if (client.getName().equals(clientName)) {
+                    return client;
+                } else {
+                    try {
+                        throw new NoSuchClientException();
+                    } catch (NoSuchClientException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
-    private void addTvToStock(Scanner scanner) {
-        String key = "television";
-        Product product;
-        Product television;
-
-        System.out.println("Input product specifications: ");
-        product = Utils.addProduct(scanner);
-
-        System.out.print("Screen size in inches: ");
-        int screedSize = scanner.nextInt();
-
-        System.out.print("Has touch screen: [true/false] ");
-        boolean isSmart = scanner.nextBoolean();
-
-        television = new Television(product, screedSize, isSmart);
-        storeStock.put(key, television);
-    }
-
-    private void addPhoneToStock(Scanner scanner) {
-        String key = "phone";
-        Product product;
-        Product phone;
-
-        System.out.println("Input product specifications: ");
-        product = Utils.addProduct(scanner);
-
-        System.out.print("Battery size in mAh: ");
-        int batterySize = scanner.nextInt();
-
-        System.out.print("No. of mega pixels for main camera: ");
-        int megaPixels = scanner.nextInt();
-
-        phone = new MobilePhone(product, batterySize, megaPixels);
-        storeStock.put(key, phone);
-        System.out.println(phone);
-    }
-
-//    private Product addProduct(Scanner scanner) {
-//        scanner.nextLine();
-//        System.out.print("Manufacturer: ");
-//        String manufacturer = scanner.nextLine();
-//
-//        System.out.print("Price: ");
-//        double price = scanner.nextDouble();
-//
-//        System.out.print("No. of products: ");
-//        int stock = scanner.nextInt();
-//
-//        return new Product(manufacturer, price, stock);
-//    }
 }
+
+
+
+

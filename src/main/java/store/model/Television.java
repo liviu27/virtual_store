@@ -6,7 +6,7 @@ public class Television extends Product {
 
 
     public Television(Product product, int screenSize, boolean isSmart) {
-        super(product.manufacturer, product.price, product.stock );
+        super(product.type, product.manufacturer, product.price, product.stock );
         this.screenSize = screenSize;
         this.isSmart = isSmart;
     }

@@ -6,7 +6,7 @@ public class Notebook extends Product {
 
 
     public Notebook(Product product, int processors, boolean hasTouchScreen) {
-        super(product.manufacturer, product.price, product.stock);
+        super(product.type ,product.manufacturer, product.price, product.stock);
         this.processors = processors;
         this.hasTouchScreen = hasTouchScreen;
     }

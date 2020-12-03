@@ -5,7 +5,7 @@ public class MobilePhone extends Product {
     int megaPixels;
 
     public MobilePhone(Product product, int batterySize, int megaPixels) {
-        super(product.manufacturer, product.price, product.stock);
+        super(product.type, product.manufacturer, product.price, product.stock);
         this.batterySize = batterySize;
         this.megaPixels = megaPixels;
     }
