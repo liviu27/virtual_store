@@ -10,12 +10,15 @@ public class Client {
     public final int ID;
     private static int counter = 0;
 
+    Basket basket;
+
     public Client(String name, String address, Birthday bday, int registrationYear) {
         this.name = name;
         this.address = address;
         this.bday = bday;
         this.registrationYear = registrationYear;
         this.ID = ++counter;
+        this.basket = new Basket();
     }
 
     public String getName() {

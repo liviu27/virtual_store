@@ -3,10 +3,13 @@ package store.menus;
 import store.exceptions.InsufficientStockException;
 import store.exceptions.NoSuchClientException;
 import store.model.*;
+import store.service.ClientService;
 import store.util.Utils;
 
 import java.time.LocalDate;
 import java.util.*;
+
+import static store.service.ClientService.CLIENT_SERVICE;
 
 public class StoreMenu implements IMenu {
 
@@ -31,7 +34,6 @@ public class StoreMenu implements IMenu {
         return instance;
     }
 
-    private Map<Client, Basket> mapCustomerBasket = new HashMap<>();
 
     private List<Product> laptopStock = new ArrayList<>();
     private List<Product> televisionStock = new ArrayList<>();
@@ -78,8 +80,7 @@ public class StoreMenu implements IMenu {
         Birthday customerBirthday = new Birthday(month, day, year);
 
         Client client = new Client(customerName, customerAddress, customerBirthday, LocalDate.now().getYear());
-        Basket customerBasket = new Basket();
-        mapCustomerBasket.put(client, customerBasket);
+        CLIENT_SERVICE.addNewClient(client);
         System.out.println(client);
     }
 
@@ -164,23 +165,18 @@ public class StoreMenu implements IMenu {
     }
 
     private Client verifyClient(Scanner scanner) {
-        Set<Client> clientSetList = mapCustomerBasket.keySet();
         scanner.nextLine();
         System.out.println("Enter Client name: ");
-        while (true) {
+        Client client = null;
+        do {
             String clientName = scanner.nextLine();
-            for (Client client : clientSetList) {
-                if (client.getName().equals(clientName)) {
-                    return client;
-                } else {
-                    try {
-                        throw new NoSuchClientException();
-                    } catch (NoSuchClientException e) {
-                        e.printStackTrace();
-                    }
-                }
+            try {
+                client = CLIENT_SERVICE.getClientByName(clientName);
+            } catch (NoSuchClientException e) {
+                System.err.println("Please try again, the username doesn't exist");
             }
-        }
+        } while (client == null);
+        return client;
     }
 
 }
