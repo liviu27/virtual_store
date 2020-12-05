@@ -2,6 +2,10 @@ package store.service;
 
 import store.exceptions.NoSuchClientException;
 import store.model.Client;
+import store.model.Product;
+
+import java.util.List;
+import java.util.Set;
 
 import static store.repo.ClientRepository.CLIENT_REPOSITORY;
 
@@ -18,5 +22,17 @@ public enum ClientService {
             throw new NoSuchClientException();
         }
         return clientByName;
+    }
+
+    public Set<String> getRegisteredClients() {
+        return CLIENT_REPOSITORY.getClientNames();
+    }
+
+    public List<Client> getAllClientsWithBasket() {
+        return CLIENT_REPOSITORY.getAllClientsSortedAlphabetically();
+    }
+
+    public void setBasket(String clientName, Product product) {
+        CLIENT_REPOSITORY.getClientByName(clientName).getBasket().addToBasket(product);
     }
 }

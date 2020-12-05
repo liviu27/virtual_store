@@ -6,7 +6,7 @@ public class Notebook extends Product {
 
 
     public Notebook(Product product, int processors, boolean hasTouchScreen) {
-        super(product.type ,product.manufacturer, product.price, product.stock);
+        super(product.type ,product.name, product.price, product.quantity);
         this.processors = processors;
         this.hasTouchScreen = hasTouchScreen;
     }
@@ -14,11 +14,11 @@ public class Notebook extends Product {
     @Override
     public String toString() {
         return "Notebook {" +
-                "manufacturer = " + manufacturer +
+                "name/model = " + name +
                 ", processors = " + processors +
                 ", hasTouchScreen = " + hasTouchScreen +
                 ", price = " + price +
-                ", stock = " + stock +
+                ", stock = " + quantity +
                 '}';
     }
 }

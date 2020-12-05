@@ -14,8 +14,8 @@ public class Basket {
         return basket;
     }
 
-    public void setBasket(List<Product> basket) {
-        this.basket = basket;
+    public void addToBasket(Product product) {
+        basket.add(product);
     }
 
     @Override

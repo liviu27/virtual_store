@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Utils {
     public static Product addProduct(Scanner scanner) {
         System.out.println("Choose type of product:" +
-                "\n1) Laptop" +
+                "\n1) Notebook" +
                 "\n2) Television" +
                 "\n3) Mobile phone");
 
@@ -18,7 +18,7 @@ public class Utils {
         int option = scanner.nextInt();
         switch (option) {
             case 1:
-                typeOfProduct = "laptop";
+                typeOfProduct = "notebook";
                 break;
             case 2:
                 typeOfProduct = "television";
@@ -27,19 +27,19 @@ public class Utils {
                 typeOfProduct = "mobile phone";
                 break;
             default:
-                System.out.println("No such option");
+                System.out.println("No such option...");
                 StoreMenu.getInstance().displayMenu(scanner);
         }
         scanner.nextLine();
-        System.out.print("Manufacturer: ");
-        String manufacturer = scanner.nextLine();
+        System.out.print("Name/Manufacturer: ");
+        String name = scanner.nextLine();
 
         System.out.print("Price in Euro: ");
         double price = scanner.nextDouble();
 
-        System.out.print("No. of products: ");
-        int stock = scanner.nextInt();
+        System.out.print("Quantity: ");
+        int quantity = scanner.nextInt();
 
-        return new Product(typeOfProduct, manufacturer, price, stock);
+        return new Product(typeOfProduct, name, price, quantity);
     }
 }

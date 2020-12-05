@@ -10,7 +10,7 @@ public class Client {
     public final int ID;
     private static int counter = 0;
 
-    Basket basket;
+    final Basket basket;
 
     public Client(String name, String address, Birthday bday, int registrationYear) {
         this.name = name;
@@ -23,6 +23,10 @@ public class Client {
 
     public String getName() {
         return name;
+    }
+
+    public Basket getBasket() {
+        return basket;
     }
 
     public void setName(String name) {
@@ -62,12 +66,11 @@ public class Client {
 
     @Override
     public String toString() {
-        return "Customer " + ID +" [" +
+        return "Customer " + ID + " - " +
                 "name: '" + name + '\'' +
                 ", address: '" + address + '\'' +
                 ", birthday: '" + bday + '\'' +
-                ", registration year: " + registrationYear +
-                ']';
+                ", registration year: " + registrationYear + ", " + basket;
     }
 
 }

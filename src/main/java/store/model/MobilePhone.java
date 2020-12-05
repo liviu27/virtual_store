@@ -5,7 +5,7 @@ public class MobilePhone extends Product {
     int megaPixels;
 
     public MobilePhone(Product product, int batterySize, int megaPixels) {
-        super(product.type, product.manufacturer, product.price, product.stock);
+        super(product.type, product.name, product.price, product.quantity);
         this.batterySize = batterySize;
         this.megaPixels = megaPixels;
     }
@@ -13,11 +13,11 @@ public class MobilePhone extends Product {
     @Override
     public String toString() {
         return "Mobile Phone {" +
-                "manufacturer = " + manufacturer +
+                "name/model = " + name +
                 ", megaPixels = " + megaPixels +
                 ", battery size = " + batterySize +
                 ", price = " + price +
-                ", stock = " + stock +
+                ", stock = " + quantity +
                 '}';
     }
 }

@@ -2,34 +2,35 @@ package store.model;
 
 public class Product {
     String type;
-    String manufacturer;
+    String name;
     double price;
-    int stock;
+    int quantity;
 
-    public Product(String type, String manufacturer, double price, int stock) {
+    public Product(String type, String name, double price, int quantity) {
         this.type = type;
-        this.manufacturer = manufacturer;
+        this.name = name;
         this.price = price;
-        this.stock = stock;
+        this.quantity = quantity;
     }
 
     public String getType() {
         return type;
     }
 
-    public String getManufacturer() {
-        return manufacturer;
+    public String getName() {
+        return name;
     }
 
     public double getPrice() {
         return price;
     }
 
-    public int getStock() {
-        return stock;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }
+
