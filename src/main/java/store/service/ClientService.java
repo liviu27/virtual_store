@@ -5,6 +5,7 @@ import store.model.Client;
 import store.model.Product;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static store.repo.ClientRepository.CLIENT_REPOSITORY;
@@ -24,7 +25,7 @@ public enum ClientService {
         return clientByName;
     }
 
-    public Set<String> getRegisteredClients() {
+    public List<String> getRegisteredClients() {
         return CLIENT_REPOSITORY.getClientNames();
     }
 

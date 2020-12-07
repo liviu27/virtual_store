@@ -21,8 +21,14 @@ public enum ClientRepository {
         return customersByName.get(name);
     }
 
-    public Set<String> getClientNames() {
-        return customersByName.keySet();
+    public List<String> getClientNames() {
+        List<String> customerNameAndRegYear = new ArrayList<>();
+        Set<String> customerNames = customersByName.keySet();
+        for (String name : customerNames) {
+            int regYear = customersByName.get(name).getRegistrationYear();
+            customerNameAndRegYear.add(name+ " - reg. year = " + regYear);
+        }
+        return customerNameAndRegYear;
     }
 
     public List<Client> getAllClientsSortedAlphabetically() {

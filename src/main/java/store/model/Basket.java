@@ -10,7 +10,7 @@ public class Basket {
         basket = new ArrayList<>();
     }
 
-    public List<Product> getBasket() {
+    public List<Product> getBasketContent() {
         return basket;
     }
 

@@ -49,6 +49,10 @@ public class Client {
         this.registrationYear = registrationYear;
     }
 
+    public Birthday getBday() {
+        return bday;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,11 +1,11 @@
 package store.menus;
 
-import store.exceptions.InsufficientStockException;
 import store.exceptions.NoSuchClientException;
 import store.model.*;
 import store.util.Utils;
 
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -47,9 +47,9 @@ public class StoreMenu implements IMenu {
                 case INT_2 -> addProductToStock(scanner);
                 case INT_3 -> updateStock(scanner);
                 case INT_4 -> addProductToBasket(scanner);
-//                case INT_5 -> listBasketContent(scanner);
-//                case INT_6 -> removeProduct(scanner);
-//                case INT_7 -> removeAllProducts(scanner);
+                case INT_5 -> listBasketContent(scanner);
+                case INT_6 -> removeProduct(scanner);
+                case INT_7 -> removeAllProducts(scanner);
                 case INT_8 -> System.out.println(CLIENT_SERVICE.getRegisteredClients());
                 case INT_9 -> System.out.println(CLIENT_SERVICE.getAllClientsWithBasket());
                 case INT_0 -> System.out.print("Returning to main menu...");
@@ -123,26 +123,75 @@ public class StoreMenu implements IMenu {
 
     private void addProductToBasket(Scanner scanner) {
         // Client verification
-        Client client = verifyClient(scanner);
+        Client verifiedClient = verifyClient(scanner);
 
         // Listing all products from stock
-        System.out.print("Select item from the list below to add to your basket:\n");
+        System.out.print("Select item (input no.) from the list below to add to your basket:\n");
         List<Product> productsInStock = STOCK_SERVICE.getAllProductsInStock();
         for (int i = 0; i < productsInStock.size(); i++) {
             System.out.println((i + 1) + ". " + productsInStock.get(i));
         }
 
-        //Adding to Client's basket
+        //Choosing product and quantity
         int index = scanner.nextInt() - 1;
-        Product chosenProduct = productsInStock.get(index);
-        int oldStock = chosenProduct.getQuantity();
-        System.out.print("Choose quantity: ");
+        System.out.print("\nChoose quantity: ");
         int quantityInBasket = scanner.nextInt();
-        chosenProduct.setQuantity(quantityInBasket);
-        CLIENT_SERVICE.setBasket(client.getName(), chosenProduct);
 
-        STOCK_SERVICE.setStock(chosenProduct.getName(), (oldStock-quantityInBasket));
+        Product chosenProduct = productsInStock.get(index);
+        Product productToBeAdded = null;
+        switch (chosenProduct.getType()) {
+            case "notebook" -> productToBeAdded = new Notebook((Notebook) chosenProduct, quantityInBasket);
+            case "television" -> productToBeAdded = new Television((Television) chosenProduct, quantityInBasket);
+            case "mobile phone" -> productToBeAdded = new MobilePhone((MobilePhone) chosenProduct, quantityInBasket);
+        }
 
+        // Update stock
+        if (chosenProduct.getQuantity() < 1) {
+            System.err.println("Insufficient Stock, chose other product!");
+            StoreMenu.getInstance().displayMenu(scanner);
+        }
+        STOCK_SERVICE.setStock(productsInStock.get(index).getName(), productsInStock.get(index).getQuantity() - quantityInBasket);
+
+        // Add to basket
+        CLIENT_SERVICE.setBasket(verifiedClient.getName(), productToBeAdded);
+    }
+
+    private void listBasketContent(Scanner scanner) {
+        Client verifiedClient = verifyClient(scanner);
+
+        System.out.println("Basket content: ");
+        List<Product> verifiedClientBasket = verifiedClient.getBasket().getBasketContent();
+        for (int i = 0; i < verifiedClientBasket.size(); i++) {
+            System.out.println((i + 1) + verifiedClientBasket.get(i).toString());
+        }
+        double basketValue = 0;
+        for (Product product : verifiedClientBasket) {
+            basketValue += (product.getPrice() * product.getQuantity());
+        }
+
+        double basketValueWithDiscount = Utils.getDiscount(verifiedClient, basketValue);
+        System.out.println("\nBasket value is: " + basketValueWithDiscount);
+
+    }
+
+    private void removeProduct(Scanner scanner) {
+        Client verifiedClient = verifyClient(scanner);
+        System.out.println("Type name of product to be removed from basket: ");
+        String productName = scanner.nextLine();
+        List<Product> basketContent = verifiedClient.getBasket().getBasketContent();
+        Iterator<Product> it = basketContent.iterator();
+        while (it.hasNext()){
+            if(productName.equals(it.next().getName())){
+                it.remove();
+            }
+        }
+    }
+
+    private void removeAllProducts(Scanner scanner) {
+        Client verifiedClient = verifyClient(scanner);
+        verifiedClient.getBasket().getBasketContent().clear();
+        System.out.println("Basket is cleared!");
+        System.out.println(verifiedClient.getName() + " - Basket = " + verifiedClient.getBasket().getBasketContent());
     }
 
     private Client verifyClient(Scanner scanner) {

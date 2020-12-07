@@ -13,6 +13,9 @@ public class Product {
         this.quantity = quantity;
     }
 
+    public Product() {
+    }
+
     public String getType() {
         return type;
     }

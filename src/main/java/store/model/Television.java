@@ -11,6 +11,15 @@ public class Television extends Product {
         this.isSmart = isSmart;
     }
 
+    public Television(Television television, int quantity) {
+        this.type = television.type;
+        this.name = television.name;
+        this.price = television.price;
+        this.screenSize = television.screenSize;
+        this.isSmart = television.isSmart;
+        this.quantity = quantity;
+    }
+
     @Override
     public String toString() {
         return "Television {" +

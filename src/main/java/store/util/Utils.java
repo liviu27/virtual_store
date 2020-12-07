@@ -1,8 +1,10 @@
 package store.util;
 
 import store.menus.StoreMenu;
+import store.model.Client;
 import store.model.Product;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Utils {
@@ -41,5 +43,25 @@ public class Utils {
         int quantity = scanner.nextInt();
 
         return new Product(typeOfProduct, name, price, quantity);
+    }
+
+    public static double getDiscount(Client client, double basketValue) {
+        int currentDay = LocalDate.now().getDayOfMonth();
+        int currentMonth = LocalDate.now().getMonthValue();
+
+        if (currentMonth == client.getBday().getMonth()
+                && currentDay == client.getBday().getDay()
+                && client.getRegistrationYear() < 2018) {
+            return basketValue * 0.85;
+        }
+
+        if (client.getRegistrationYear() < 2018) {
+            return basketValue * 0.9;
+        }
+
+        if (currentMonth == client.getBday().getMonth() && currentDay == client.getBday().getDay()) {
+            return basketValue * 0.95;
+        }
+        return basketValue;
     }
 }
