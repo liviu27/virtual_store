@@ -17,6 +17,10 @@ public enum StockService {
         return STOCK_REPOSITORY.getAllProductsAlphabetically();
     }
 
+    public Product getProductByName(String productName) {
+        return STOCK_REPOSITORY.getProductByName(productName);
+    }
+
     public void setStock(String productName, int quantity) {
         STOCK_REPOSITORY.updateStock(productName, quantity);
     }

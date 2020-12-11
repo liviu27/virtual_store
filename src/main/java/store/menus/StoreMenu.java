@@ -48,7 +48,7 @@ public class StoreMenu implements IMenu {
                 case INT_3 -> updateStock(scanner);
                 case INT_4 -> addProductToBasket(scanner);
                 case INT_5 -> listBasketContent(scanner);
-                case INT_6 -> removeProduct(scanner);
+                case INT_6 -> removeProductFromBasket(scanner);
                 case INT_7 -> removeAllProducts(scanner);
                 case INT_8 -> System.out.println(CLIENT_SERVICE.getRegisteredClients());
                 case INT_9 -> System.out.println(CLIENT_SERVICE.getAllClientsWithBasket());
@@ -116,7 +116,7 @@ public class StoreMenu implements IMenu {
         STOCK_SERVICE.listStock();
 
         String productName = scanner.nextLine();
-        System.out.println("Enter updated quantity for " + productName + ": ");
+        System.out.println("Enter new quantity for " + productName + ": ");
         int updatedQuantity = scanner.nextInt();
         STOCK_SERVICE.setStock(productName, updatedQuantity);
     }
@@ -174,14 +174,19 @@ public class StoreMenu implements IMenu {
 
     }
 
-    private void removeProduct(Scanner scanner) {
+    private void removeProductFromBasket(Scanner scanner) {
         Client verifiedClient = verifyClient(scanner);
         System.out.println("Type name of product to be removed from basket: ");
         String productName = scanner.nextLine();
+
         List<Product> basketContent = verifiedClient.getBasket().getBasketContent();
         Iterator<Product> it = basketContent.iterator();
-        while (it.hasNext()){
-            if(productName.equals(it.next().getName())){
+        while (it.hasNext()) {
+            Product productToBeRemoved = it.next();
+            int quantityInBasket = productToBeRemoved.getQuantity();
+            if (productName.equals(productToBeRemoved.getName())) {
+                Product productFromStock = STOCK_SERVICE.getProductByName(productToBeRemoved.getName());
+                STOCK_SERVICE.setStock(productFromStock.getName(), (productFromStock.getQuantity() + quantityInBasket));
                 it.remove();
             }
         }
@@ -189,7 +194,17 @@ public class StoreMenu implements IMenu {
 
     private void removeAllProducts(Scanner scanner) {
         Client verifiedClient = verifyClient(scanner);
-        verifiedClient.getBasket().getBasketContent().clear();
+
+        List<Product> basketContent = verifiedClient.getBasket().getBasketContent();
+        Iterator<Product> it = basketContent.iterator();
+        while (it.hasNext()) {
+            Product productToBeRemoved = it.next();
+            int quantityInBasket = productToBeRemoved.getQuantity();
+            Product productFromStock = STOCK_SERVICE.getProductByName(productToBeRemoved.getName());
+            STOCK_SERVICE.setStock(productFromStock.getName(), (productFromStock.getQuantity() + quantityInBasket));
+            it.remove();
+        }
+
         System.out.println("Basket is cleared!");
         System.out.println(verifiedClient.getName() + " - Basket = " + verifiedClient.getBasket().getBasketContent());
     }
